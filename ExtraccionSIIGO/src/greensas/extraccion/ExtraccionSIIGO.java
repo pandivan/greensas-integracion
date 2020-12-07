@@ -6,6 +6,7 @@ import greensas.dao.ClienteDao;
 import greensas.dao.VendedorDao;
 import greensas.dao.VentasDao;
 import greensas.utilidades.ConexionBD;
+import greensas.utilidades.Constantes;
 import greensas.utilidades.Tools;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
-import utilidades.Constantes;
+
 
 
 
@@ -25,14 +26,12 @@ public class ExtraccionSIIGO
 
     private static int año;
     private static String unidadNegocio;
-    private static String bodegas = Constantes.BODEGAS_CALI;
+    private static final String bodegas = Constantes.BODEGAS_CALI;
     private static Map<String, String> hsmProductosHomologados;
 
     //Si necesitamos hacer cargas incrementales utilizariamos la linea de abajo
     //private static String path = "src/" + Integer.toString(fecha.get(Calendar.YEAR)) + "/" + Integer.toString(fecha.get(Calendar.DAY_OF_MONTH)) + "." + Integer.toString(fecha.get(Calendar.MONTH)+1) + "." + Integer.toString(fecha.get(Calendar.YEAR));    
-    private static final String PATH = "F:\\BIQlik\\ExtraccionSIIGO\\src\\Data\\";
-//    private static final String PATH = "C:\\Greensas\\Java\\ExtraccionSIIGO\\src\\Data\\"; //Casa
-//    private static final String PATH = "D:\\Piloto\\ExtraccionSIIGO\\src\\Data\\"; //Oficina
+    private static final String PATH = "D:\\BIQlik\\greensas-integracion\\ExtraccionSIIGO\\src\\Data\\";
 
 
     public static void main(String[] args)
@@ -75,7 +74,7 @@ public class ExtraccionSIIGO
                     }
 
                     System.out.println("Generando ventas del año [" + año + "]");
-                    generarVentas();
+//                    generarVentas();
                     //Crea archivo de ventas totales para efecto de pruebas
 //                    generarVentas2();
                     System.out.println("Finalizo ventas del año [" + año + "]");
