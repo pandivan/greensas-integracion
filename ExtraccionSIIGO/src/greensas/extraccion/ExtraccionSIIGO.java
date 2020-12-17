@@ -74,7 +74,8 @@ public class ExtraccionSIIGO
                     }
 
                     System.out.println("Generando ventas del año [" + año + "]");
-//                    generarVentas();
+                    generarVentas();
+                    
                     //Crea archivo de ventas totales para efecto de pruebas
 //                    generarVentas2();
                     System.out.println("Finalizo ventas del año [" + año + "]");
@@ -488,19 +489,22 @@ public class ExtraccionSIIGO
 
             if (!lstVentasSaldos.isEmpty())
             {
-                int mitad = (lstVentasSaldos.size() / 3);
-
-                List<String> lstVentasMitad = lstVentasSaldos.subList(0, mitad);
-                lstVentasMitad.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
-                Tools.crearArchivo(lstVentasMitad, PATH + año + "_" + unidadNegocio + "_1_Ventas.txt");
-
-                lstVentasMitad = lstVentasSaldos.subList((mitad + 1), (mitad + mitad));
-                lstVentasMitad.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
-                Tools.crearArchivo(lstVentasMitad, PATH + año + "_" + unidadNegocio + "_2_Ventas.txt");
+                lstVentasSaldos.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
+                Tools.crearArchivo(lstVentasSaldos, PATH + año + "_" + unidadNegocio + "_Ventas.txt");
                 
-                lstVentasMitad = lstVentasSaldos.subList(((mitad + mitad) + 1), lstVentasSaldos.size());
-                lstVentasMitad.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
-                Tools.crearArchivo(lstVentasMitad, PATH + año + "_" + unidadNegocio + "_3_Ventas.txt");
+//                int mitad = (lstVentasSaldos.size() / 3);
+
+//                List<String> lstVentasMitad = lstVentasSaldos.subList(0, mitad);
+//                lstVentasMitad.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
+//                Tools.crearArchivo(lstVentasMitad, PATH + año + "_" + unidadNegocio + "_1_Ventas.txt");
+//
+//                lstVentasMitad = lstVentasSaldos.subList((mitad + 1), (mitad + mitad));
+//                lstVentasMitad.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
+//                Tools.crearArchivo(lstVentasMitad, PATH + año + "_" + unidadNegocio + "_2_Ventas.txt");
+//                
+//                lstVentasMitad = lstVentasSaldos.subList(((mitad + mitad) + 1), lstVentasSaldos.size());
+//                lstVentasMitad.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
+//                Tools.crearArchivo(lstVentasMitad, PATH + año + "_" + unidadNegocio + "_3_Ventas.txt");
 
                 //Se habilita solo para debuguear archivo de ventas totales
 //                lstVentasSaldos.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
