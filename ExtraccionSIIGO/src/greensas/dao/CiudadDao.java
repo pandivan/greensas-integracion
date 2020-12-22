@@ -33,7 +33,7 @@ public class CiudadDao
 
         try
         {
-            String consulta = "SELECT c.NroCiudadCiu, c.CodDaneCiu, c.NombreCiu FROM TABLA_DESCRIPCION_CIUDAD c";
+            String consulta = "SELECT c.NroCiudadCiu, c.NombreCiu FROM TABLA_DESCRIPCION_CIUDAD c";
 
             ResultSet resultSet = conexionBD.ejecutarConsulta(consulta);
 
@@ -41,7 +41,7 @@ public class CiudadDao
             {
                 try
                 {   
-                    lstCiudadades.add(resultSet.getString(1).trim().concat("|").concat(resultSet.getString(2).trim()).concat("|").concat(resultSet.getString(3).trim()).concat("|").concat(unidadNegocio));
+                    lstCiudadades.add(resultSet.getString(1).trim().concat("|").concat(resultSet.getString(2).trim()).concat("|").concat(unidadNegocio));
                 }
                 catch (SQLException e)
                 {

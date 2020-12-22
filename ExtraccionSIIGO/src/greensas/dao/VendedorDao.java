@@ -34,8 +34,7 @@ public class VendedorDao
 
         try
         {
-            String consulta = "SELECT ven.VenVen, 'Magda Rosero' Coordinador, ven.NombreVen "
-                            + "FROM TABLA_DESCRIPCION_VENDEDORES ven";
+            String consulta = "SELECT ven.VenVen, ven.NombreVen FROM TABLA_DESCRIPCION_VENDEDORES ven";
 
             ResultSet resultSet = conexionBD.ejecutarConsulta(consulta);
 
@@ -43,7 +42,7 @@ public class VendedorDao
             {
                 try
                 {   
-                    lstVendedores.add(resultSet.getString(1).trim().concat("|").concat(resultSet.getString(2).trim()).concat("|").concat(resultSet.getString(3).trim()).concat("|").concat(unidadNegocio));
+                    lstVendedores.add(resultSet.getString(1).trim().concat("|").concat(resultSet.getString(2).trim()).concat("|").concat(unidadNegocio));
                 }
                 catch (SQLException e)
                 {

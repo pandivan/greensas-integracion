@@ -52,7 +52,7 @@ public class ExtraccionSIIGO
             unidadNegocio = unidadNegocioTemp;
 
             //Recorriendo año actual y año anterior
-            for (int j = 0; j < 1; j++)
+            for (int j = 0; j < 2; j++)
             {
                 try
                 {
@@ -106,7 +106,8 @@ public class ExtraccionSIIGO
 
             if (!lstCiudades.isEmpty())
             {
-                lstCiudades.add(0, "NroCiudadCiu|CodDaneCiu|NombreCiu|UnidadNegocio");
+//                lstCiudades.add(0, "NroCiudadCiu|CodDaneCiu|NombreCiu|UnidadNegocio");
+                lstCiudades.add(0, "ciudades|ciudad|unidad_negocio"); //se renombrean las cabeceras para efectos en Qlik
                 Tools.crearArchivo(lstCiudades, PATH + "Ciudades" + unidadNegocio + ".txt");
             }
         }
@@ -129,7 +130,8 @@ public class ExtraccionSIIGO
 
             if (!lstVendedores.isEmpty())
             {
-                lstVendedores.add(0, "VenVen|Coordinador|NombreVen|UnidadNegocio");
+//                lstVendedores.add(0, "VenVen|Coordinador|NombreVen|UnidadNegocio");
+                lstVendedores.add(0, "vendedores|vendedor|unidad_negocio"); //se renombrean las cabeceras para efectos en Qlik
                 Tools.crearArchivo(lstVendedores, PATH + "Vendedores" + unidadNegocio + ".txt");
             }
         }
@@ -152,7 +154,8 @@ public class ExtraccionSIIGO
 
             if (!lstBodegas.isEmpty())
             {
-                lstBodegas.add(0, "NroBodegaBod|NombreBod|UnidadNegocio");
+//                lstBodegas.add(0, "NroBodegaBod|NombreBod|UnidadNegocio");
+                lstBodegas.add(0, "tiendas|tienda|unidad_negocio"); //se renombrean las cabeceras para efectos en Qlik
                 Tools.crearArchivo(lstBodegas, PATH + "Bodegas" + unidadNegocio + ".txt");
             }
         }
@@ -236,7 +239,7 @@ public class ExtraccionSIIGO
                      */
                 }
 
-                String registro = idProducto.concat("|").concat(tipo).concat("|").concat(idLinea).concat("|").concat(linea).concat("|").concat(idGrupo).concat("|").concat(grupo).concat("|").concat(descripcion).concat("|").concat(proveedor).concat("|").concat(precio1).concat("|").concat(precio3).concat("|").concat(descodificar).concat("|").concat(costo).concat("|").concat(unidadNegocio).concat("|").concat(unidadConversion.toString().replace(".", ","));
+                String registro = idProducto.concat("|").concat(tipo).concat("|").concat(linea).concat("|").concat(idGrupo).concat("|").concat(grupo).concat("|").concat(descripcion).concat("|").concat(proveedor).concat("|").concat(precio1).concat("|").concat(precio3).concat("|").concat(descodificar).concat("|").concat(costo).concat("|").concat(unidadNegocio).concat("|").concat(unidadConversion.toString().replace(".", ","));
 
                 hsmProductos.put(idProducto, registro);
             }
@@ -246,7 +249,8 @@ public class ExtraccionSIIGO
                 lstProductos.add(registro);
             }
 
-            lstProductos.add(0, "ID_PRODUCTO|TIPO|ID_LINEA|LINEA|ID_GRUPO|GRUPO|PRODUCTO|PROVEEDOR|PRECIO1|PRECIO3|DESCODIFICADO|COSTO|UNIDADNEGOCIO|UNIDADCONVERSION");
+//            lstProductos.add(0, "ID_PRODUCTO|TIPO|ID_LINEA|LINEA|ID_GRUPO|GRUPO|PRODUCTO|PROVEEDOR|PRECIO1|PRECIO3|DESCODIFICADO|COSTO|UNIDADNEGOCIO|UNIDADCONVERSION");
+            lstProductos.add(0, "productos|tipo|linea|id_grupo|grupo|producto|proveedor|precio1|precio3|descodificado|costo|unidad_negocio|unidad_conversion"); //se renombrean las cabeceras para efectos en Qlik
             Tools.crearArchivo(lstProductos, PATH + "Productos" + unidadNegocio + ".txt");
         }
         catch (Exception ex)
@@ -293,7 +297,8 @@ public class ExtraccionSIIGO
                     lstClientes.add(nit.concat("|").concat(nombreCliente).concat("|").concat(tipoCliente).concat("|").concat(unidadNegocio));
                 }
 
-                lstClientes.add(0, "Nit|NombreCliente|TipoCliente|UnidadNegocio");
+//                lstClientes.add(0, "Nit|NombreCliente|TipoCliente|UnidadNegocio");
+                lstClientes.add(0, "clientes|cliente|tipo_cliente|unidad_negocio"); //se renombrean las cabeceras para efectos en Qlik
                 Tools.crearArchivo(lstClientes, PATH + "Clientes" + unidadNegocio + ".txt");
             }
         }
@@ -490,7 +495,7 @@ public class ExtraccionSIIGO
             if (!lstVentasSaldos.isEmpty())
             {
 //                lstVentasSaldos.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
-                lstVentasSaldos.add(0, "productos|puntos_venta|cantidad|valor|vendedores|id_tiempo|saldo|rank|cantidad_comprada|unidad_megocio|nit");
+                lstVentasSaldos.add(0, "productos|tiendas|cantidad|valor|vendedores|id_tiempo|saldo|rank|cantidad_comprada|unidad_megocio|clientes"); //se renombrean las cabeceras para efectos en Qlik
                 Tools.crearArchivo(lstVentasSaldos, PATH + año + "_" + unidadNegocio + "_Ventas.txt");
             }
         }
