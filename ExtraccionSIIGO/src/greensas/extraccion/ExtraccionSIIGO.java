@@ -8,14 +8,16 @@ import greensas.dao.VentasDao;
 import greensas.utilidades.ConexionBD;
 import greensas.utilidades.Constantes;
 import greensas.utilidades.Tools;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
-
 
 
 
@@ -31,7 +33,9 @@ public class ExtraccionSIIGO
 
     //Si necesitamos hacer cargas incrementales utilizariamos la linea de abajo
     //private static String path = "src/" + Integer.toString(fecha.get(Calendar.YEAR)) + "/" + Integer.toString(fecha.get(Calendar.DAY_OF_MONTH)) + "." + Integer.toString(fecha.get(Calendar.MONTH)+1) + "." + Integer.toString(fecha.get(Calendar.YEAR));    
-    private static final String PATH = "D:\\BIQlik\\greensas-integracion\\ExtraccionSIIGO\\src\\Data\\";
+    private static final String PATH = "K:\\BIQlik\\greensas-integracion\\ExtraccionSIIGO\\src\\Data\\";
+    
+    private static final SimpleDateFormat formato = new SimpleDateFormat("yyyyMMdd");
 
 
     public static void main(String[] args)
@@ -48,11 +52,25 @@ public class ExtraccionSIIGO
             //Obteniendo productos que van hacer homologados
             hsmProductosHomologados = Tools.leerArchivoMap(PATH + "ProductosHomologados.txt");
 
-            año = Calendar.getInstance().get(Calendar.YEAR);
+            Calendar calendar = Calendar.getInstance();
+            Date fechaActual = new Date();
+            
+            //Cuando neciste recargar algún trimesre puntual activar try
+//            Date fechaActual = null; 
+//            try {
+//                fechaActual = formato.parse("20201201"); 
+//            } catch (ParseException ex) {
+//                Logger.getLogger(ExtraccionSIIGO.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+            
+            calendar.setTime(fechaActual);
+            
+            año = calendar.get(Calendar.YEAR);
+            
             unidadNegocio = unidadNegocioTemp;
 
             //Recorriendo año actual y año anterior
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < 1; j++)
             {
                 try
                 {
@@ -74,7 +92,7 @@ public class ExtraccionSIIGO
                     }
 
                     System.out.println("Generando ventas del año [" + año + "]");
-                    generarVentas();
+                    generarVentas(calendar);
                     
                     //Crea archivo de ventas totales para efecto de pruebas
 //                    generarVentas2();
@@ -173,7 +191,8 @@ public class ExtraccionSIIGO
     {
         try
         {
-//            ProductoDao productoDao = new ProductoDao(conexionBD);
+              //No puedo acceder a la BD porque siigo presenta un error en la tabla, es por esta razon que cargo los productos desde un TXT
+//            ProductoDao productoDao = new ProductoDao(conexionBD); 
 //            List<String> lst = productoDao.getAllProductos();
 
             Map<String, String> hsmProductos = new HashMap<String, String>();
@@ -201,11 +220,12 @@ public class ExtraccionSIIGO
                 String grupo = campos[3].replace(" 19%", "").replace(" 16%", "").replace(" 5%", "");
                 String idLinea = idProducto.substring(0, 3); //570
                 String idGrupo = idProducto.substring(3, 7); //0016
-                String tipo = campos[8];
                 String proveedor = campos[4].replace(",", ".");
                 String precio1 = campos[5].replace(".", ",");
                 String precio3 = campos[6].replace(".", ",");
-                String costo = campos[7].replace(".", ",");
+                String precio4 = campos[7].replace(".", ",");
+                String costo = campos[8].replace(".", ",");
+                String tipo = campos[9];
                 String descodificar = "N";
                 Double unidadConversion = 1.0;
 
@@ -239,7 +259,7 @@ public class ExtraccionSIIGO
                      */
                 }
 
-                String registro = idProducto.concat("|").concat(tipo).concat("|").concat(linea).concat("|").concat(idGrupo).concat("|").concat(grupo).concat("|").concat(descripcion).concat("|").concat(proveedor).concat("|").concat(precio1).concat("|").concat(precio3).concat("|").concat(descodificar).concat("|").concat(costo).concat("|").concat(unidadNegocio).concat("|").concat(unidadConversion.toString().replace(".", ","));
+                String registro = idProducto.concat("|").concat(tipo).concat("|").concat(linea).concat("|").concat(idGrupo).concat("|").concat(grupo).concat("|").concat(descripcion).concat("|").concat(proveedor).concat("|").concat(precio1).concat("|").concat(precio3).concat("|").concat(precio4).concat("|").concat(descodificar).concat("|").concat(costo).concat("|").concat(unidadNegocio).concat("|").concat(unidadConversion.toString().replace(".", ","));
 
                 hsmProductos.put(idProducto, registro);
             }
@@ -250,7 +270,7 @@ public class ExtraccionSIIGO
             }
 
 //            lstProductos.add(0, "ID_PRODUCTO|TIPO|ID_LINEA|LINEA|ID_GRUPO|GRUPO|PRODUCTO|PROVEEDOR|PRECIO1|PRECIO3|DESCODIFICADO|COSTO|UNIDADNEGOCIO|UNIDADCONVERSION");
-            lstProductos.add(0, "productos|tipo|linea|id_grupo|grupo|producto|proveedor|precio1|precio3|descodificado|costo|unidad_negocio|unidad_conversion"); //se renombrean las cabeceras para efectos en Qlik
+            lstProductos.add(0, "productos|tipo|linea|id_grupo|grupo|producto|proveedor|precio1|precio3|precio4|descodificado|costo|unidad_negocio|unidad_conversion"); //se renombrean las cabeceras para efectos en Qlik
             Tools.crearArchivo(lstProductos, PATH + "Productos" + unidadNegocio + ".txt");
         }
         catch (Exception ex)
@@ -309,36 +329,43 @@ public class ExtraccionSIIGO
     }
 
 
-    private static void generarVentas2()
-    {
-        try
-        {
-            System.out.println("Generando " + PATH + año + "_" + unidadNegocio + "_DataVentasTotal.txt");
-            VentasDao ventasDao = new VentasDao(conexionBD);
-            List<String> lstVentas = ventasDao.getAllVentas(bodegas);
-            lstVentas.add(0, "idProducto|idBodega|cantidad|valor|idVendedor|fechaVenta|tipo|ano|mes|dia|ordenTipo|DcMov|cuenta|nit");
-            Tools.crearArchivo(lstVentas, PATH + año + "_" + unidadNegocio + "_DataVentasTotal.txt");
-        }
-        catch (Exception ex)
-        {
-            Logger.getLogger(ExtraccionSIIGO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    private static void generarVentas2()
+//    {
+//        try
+//        {
+//            System.out.println("Generando " + PATH + año + "_" + unidadNegocio + "_DataVentasTotal.txt");
+//            VentasDao ventasDao = new VentasDao(conexionBD);
+//            List<String> lstVentas = ventasDao.getAllVentas(bodegas);
+//            lstVentas.add(0, "idProducto|idBodega|cantidad|valor|idVendedor|fechaVenta|tipo|ano|mes|dia|ordenTipo|DcMov|cuenta|nit");
+//            Tools.crearArchivo(lstVentas, PATH + año + "_" + unidadNegocio + "_DataVentasTotal.txt");
+//        }
+//        catch (Exception ex)
+//        {
+//            Logger.getLogger(ExtraccionSIIGO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
 
     /**
      * Método que permite generar el archivo de ventas del SIIGO
      */
-    private static void generarVentas()
-    {
+    private static void generarVentas(Calendar calendar)
+    {   
         try
         {
             VentasDao ventasDao = new VentasDao(conexionBD);
 
             List<String> lstVentasSaldos = new ArrayList<String>();
             List<String> lstDevoluciones = new ArrayList<String>();
+            
+            int mes = (calendar.get(Calendar.MONTH) + 1); //Como es un calendar el mes de enero comienzan en cero, febrero uno y marzo dos para el primer trimestre
+            String fechaInicioTrimestre = formato.format(getFechaInicioTrimestre(calendar));
+            String fechaFinTrimestre = formato.format(getFechaFinTrimestre(calendar));
+            
+            //Generamos el trimestre que va hacer parte del nombre del archivo txt
+            String trimestre =  mes <= 3 ? "T1" : mes > 3 && mes <= 6 ? "T2" : mes > 6 && mes <= 9 ? "T3" : "T4";
 
-            List<String> lstVentas = ventasDao.getAllVentas(bodegas);
+            List<String> lstVentas = ventasDao.getAllVentas(bodegas, mes, fechaInicioTrimestre, fechaFinTrimestre);
 //            List<String> lstVentas = Tools.leerArchivo(PATH + "2019_EDS_DataVentasTotal.txt");
 
             double saldo = 0;
@@ -496,7 +523,7 @@ public class ExtraccionSIIGO
             {
 //                lstVentasSaldos.add(0, "ProductoMov|NroBodegaBod|CantidadMov|ValorMov|VenVen|FechaDctoMov|Saldo|Rank|CantidadComprada|UnidadNegocio|Nit");
                 lstVentasSaldos.add(0, "productos|tiendas|cantidad|valor|vendedores|id_tiempo|saldo|rank|cantidad_comprada|unidad_megocio|clientes"); //se renombrean las cabeceras para efectos en Qlik
-                Tools.crearArchivo(lstVentasSaldos, PATH + año + "_" + unidadNegocio + "_Ventas.txt");
+                Tools.crearArchivo(lstVentasSaldos, PATH + "Ventas_" + año + "_" + unidadNegocio + "_" + trimestre + ".txt");
             }
         }
         catch (Exception ex)
@@ -547,5 +574,33 @@ public class ExtraccionSIIGO
         {
             Logger.getLogger(ExtraccionSIIGO.class.getName()).log(Level.SEVERE, "Error: en el Wait...", ex);
         }
+    }
+
+    
+    /**
+     * Método que permite generar la fecha inicio del trimestre según la fecha actual
+     * @param cal Calendario
+     */
+    private static Date getFechaInicioTrimestre(Calendar cal) 
+    {
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)/3 * 3);
+
+        return cal.getTime();
+    }
+    
+    
+    
+    /**
+     * Método que permite generar la fecha fin del trimestre según la fecha actual
+     * @param cal Calendario
+     */
+    private static Date getFechaFinTrimestre(Calendar cal) 
+    {  
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)/3 * 3 + 2);
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            
+        return cal.getTime();
     }
 }

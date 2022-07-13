@@ -26,18 +26,32 @@ public class VentasDao
      * Método que permite obtener todas las ventas del SIIGO
      *
      * @param bodegas
+     * @param mes Mes actual
+     * @param fechaInicioTrimestre Fecha inicio del trimestre según fecha actual
+     * @param fechaFinTrimestre Fecha fin del trimestre según fecha actual
      * @return Lista con todas las ventas
      * @throws Exception
      */
-    public List<String> getAllVentas(String bodegas) throws Exception
+    public List<String> getAllVentas(String bodegas, int mes, String fechaInicioTrimestre, String fechaFinTrimestre) throws Exception
     {
         List<String> lstVentas = new ArrayList<String>();
 
         try
         {
-            String consulta = "SELECT mb.ProductoBod AS idProducto, mb.BodegaBod AS idBodega, mb.CantAntBod AS cantidad, mb.ValAntBod AS valor, -1 AS idVendedor, 20170101 AS fechaVenta, 'SA' AS tipo, mb.AnoCompraBod AS ano, 1 AS mes, 1 AS dia, 1 AS ordenTipo, 'X' AS DcMov, 'XXXXXXXXXXXX' AS cuenta, mb.ProductoBod AS nit, mb.BodegaBod AS SucMov  FROM TABLA_MAESTRO_BODEGAS mb where mb.BodegaBod in (" + bodegas + ") union all "
-                    + "SELECT v.ProductoMov AS idProducto, v.BodegaMov AS idBodega, v.CantidadMov AS cantidad, v.ValorMov AS valor, v.VendedorMov AS idVendedor, v.FechaDctoMov AS fechaVenta, v.TipMov AS tipo, v.AnoDctoMov AS ano, v.MesDctoMov AS mes, v.DiaDctoMov AS dia, 2 AS ordenTipo, v.DcMov, v.CuentasMov AS cuenta, v.NitMov AS nit, v.SucMov FROM TABLA_MOV_INVEN_POR_COMPROBANTE v WHERE v.BodegaMov in (" + bodegas + ") and v.CuentasMov not like '6135%' ORDER BY 2, 1, 8, 9, 10, 11";
-
+            String consulta = null;
+            
+            //Como es un calendar el mes de enero comienzan en cero, febrero uno y marzo dos para el primer trimestre
+            if(mes <= 3)
+            {
+                //Si el mes hace parte del primer trimestre debemos ejecutar el primer query para trear saldos del anterior año
+                consulta = "SELECT mb.ProductoBod AS idProducto, mb.BodegaBod AS idBodega, mb.CantAntBod AS cantidad, mb.ValAntBod AS valor, -1 AS idVendedor, 20170101 AS fechaVenta, 'SA' AS tipo, mb.AnoCompraBod AS ano, 1 AS mes, 1 AS dia, 1 AS ordenTipo, 'X' AS DcMov, 'XXXXXXXXXXXX' AS cuenta, mb.ProductoBod AS nit, mb.BodegaBod AS SucMov  FROM TABLA_MAESTRO_BODEGAS mb where mb.BodegaBod in (" + bodegas + ") union all "
+                         + "SELECT v.ProductoMov AS idProducto, v.BodegaMov AS idBodega, v.CantidadMov AS cantidad, v.ValorMov AS valor, v.VendedorMov AS idVendedor, v.FechaDctoMov AS fechaVenta, v.TipMov AS tipo, v.AnoDctoMov AS ano, v.MesDctoMov AS mes, v.DiaDctoMov AS dia, 2 AS ordenTipo, v.DcMov, v.CuentasMov AS cuenta, v.NitMov AS nit, v.SucMov FROM TABLA_MOV_INVEN_POR_COMPROBANTE v WHERE v.BodegaMov in (" + bodegas + ") and v.CuentasMov not like '6135%' and v.FechaDctoMov between " + fechaInicioTrimestre + " and " + fechaFinTrimestre + " ORDER BY 2, 1, 8, 9, 10, 11";
+            }
+            else
+            {
+                consulta = "SELECT v.ProductoMov AS idProducto, v.BodegaMov AS idBodega, v.CantidadMov AS cantidad, v.ValorMov AS valor, v.VendedorMov AS idVendedor, v.FechaDctoMov AS fechaVenta, v.TipMov AS tipo, v.AnoDctoMov AS ano, v.MesDctoMov AS mes, v.DiaDctoMov AS dia, 2 AS ordenTipo, v.DcMov, v.CuentasMov AS cuenta, v.NitMov AS nit, v.SucMov FROM TABLA_MOV_INVEN_POR_COMPROBANTE v WHERE v.BodegaMov in (" + bodegas + ") and v.CuentasMov not like '6135%' and v.FechaDctoMov between " + fechaInicioTrimestre + " and " + fechaFinTrimestre + " ORDER BY 2, 1, 8, 9, 10, 11";
+            }
+            
             ResultSet resultSet = conexionBD.ejecutarConsulta(consulta);
 
             while (resultSet.next())
