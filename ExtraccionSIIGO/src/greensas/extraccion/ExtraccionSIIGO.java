@@ -33,7 +33,7 @@ public class ExtraccionSIIGO
 
     //Si necesitamos hacer cargas incrementales utilizariamos la linea de abajo
     //private static String path = "src/" + Integer.toString(fecha.get(Calendar.YEAR)) + "/" + Integer.toString(fecha.get(Calendar.DAY_OF_MONTH)) + "." + Integer.toString(fecha.get(Calendar.MONTH)+1) + "." + Integer.toString(fecha.get(Calendar.YEAR));    
-    private static final String PATH = "K:\\BIQlik\\greensas-integracion\\ExtraccionSIIGO\\src\\Data\\";
+    private static final String PATH = "D:\\BIQlik\\greensas-integracion\\ExtraccionSIIGO\\src\\Data\\";
     
     private static final SimpleDateFormat formato = new SimpleDateFormat("yyyyMMdd");
 
@@ -41,9 +41,9 @@ public class ExtraccionSIIGO
     public static void main(String[] args)
     {
         /**
-         * Recorriendo unidades de negocio dependiendo la ciudad. Pasto maneja
-         * dos unidades de negocio por separado EDS y Restaurantes Cali maneja
-         * una unidad de negocio EDS
+         * Recorriendo unidades de negocio dependiendo la ciudad. 
+         * Pasto maneja dos unidades de negocio por separado EDS y Restaurantes 
+         * Cali maneja una unidad de negocio EDS
          */
         for (String unidadNegocioTemp : getAllUnidadesNegocio(Constantes.CALI))
         {
@@ -358,7 +358,7 @@ public class ExtraccionSIIGO
             List<String> lstVentasSaldos = new ArrayList<String>();
             List<String> lstDevoluciones = new ArrayList<String>();
             
-            int mes = (calendar.get(Calendar.MONTH) + 1); //Como es un calendar el mes de enero comienzan en cero, febrero uno y marzo dos para el primer trimestre
+            int mes = (calendar.get(Calendar.MONTH) + 1); //Como es un calendar, el mes de enero comienzan en cero, febrero uno y marzo dos para el primer trimestre
             String fechaInicioTrimestre = formato.format(getFechaInicioTrimestre(calendar));
             String fechaFinTrimestre = formato.format(getFechaFinTrimestre(calendar));
             
